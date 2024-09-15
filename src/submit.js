@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button } from "@/components/ui/button"
+import { Button } from "./components/ui/button"
 import { Rocket } from "lucide-react"
 import { useStore } from './store'
 import PipelineAnalysisCard from './PipelineAnalysisCard'
