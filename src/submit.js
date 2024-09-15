@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button } from "./components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Rocket } from "lucide-react"
 import { useStore } from './store'
 import PipelineAnalysisCard from './PipelineAnalysisCard'
@@ -38,9 +38,9 @@ export default function SubmitButton() {
     <>
       <Button 
         onClick={handleSubmit}
-        className="bg-blue-500 hover:bg-blue-600 text-white dark:text-white h-8 px-3 text-sm transition-colors duration-200"
+        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md shadow-sm"
       >
-        <Rocket className="mr-2 h-3 w-3" />
+        <Rocket className="mr-2 h-4 w-4" />
         Submit Pipeline
       </Button>
       {analysisResult && !analysisResult.error && (
