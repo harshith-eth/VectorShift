@@ -1,12 +1,39 @@
-import React, { useState } from 'react'
-import { Button } from "./components/ui/button"
-import { Rocket } from "lucide-react"
-import { useStore } from './store'
-import PipelineAnalysisCard from './PipelineAnalysisCard'
+import React, { useState, useEffect } from 'react';
+import { Button } from "./components/ui/button";
+import { Rocket, Sun, Moon } from "lucide-react";
+import { useStore } from './store';
 
-export default function SubmitButton() {
-  const { nodes, edges } = useStore()
-  const [analysisResult, setAnalysisResult] = useState(null)
+export const DarkModeToggle = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const isDark = localStorage.getItem('darkMode') === 'true';
+    setIsDarkMode(isDark);
+    document.documentElement.classList.toggle('dark', isDark);
+  }, []);
+
+  const toggleDarkMode = () => {
+    const newDarkMode = !isDarkMode;
+    setIsDarkMode(newDarkMode);
+    localStorage.setItem('darkMode', newDarkMode);
+    document.documentElement.classList.toggle('dark', newDarkMode);
+  };
+
+  return (
+    <Button
+      onClick={toggleDarkMode}
+      variant="ghost"
+      size="icon"
+      className="w-9 h-9 p-0"
+      aria-label="Toggle dark mode"
+    >
+      {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+    </Button>
+  );
+};
+
+export const SubmitButton = () => {
+  const { nodes, edges } = useStore();
 
   const handleSubmit = async () => {
     try {
@@ -16,46 +43,39 @@ export default function SubmitButton() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ nodes, edges }),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok')
+        throw new Error('Network response was not ok');
       }
 
-      const data = await response.json()
-      setAnalysisResult(data)
+      const data = await response.json();
+      // Handle the response data as needed
+      console.log(data);
     } catch (error) {
-      console.error('Error:', error)
-      setAnalysisResult({ error: 'Failed to analyze pipeline. Please try again.' })
+      console.error('Error:', error);
+      // Handle the error as needed
     }
-  }
-
-  const handleCloseAnalysis = () => {
-    setAnalysisResult(null)
-  }
+  };
 
   return (
-    <>
-      <Button 
-        onClick={handleSubmit}
-        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md shadow-sm"
-      >
-        <Rocket className="mr-2 h-4 w-4" />
-        Submit Pipeline
-      </Button>
-      {analysisResult && !analysisResult.error && (
-        <PipelineAnalysisCard
-          numNodes={analysisResult.num_nodes}
-          numEdges={analysisResult.num_edges}
-          isDag={analysisResult.is_dag}
-          onClose={handleCloseAnalysis}
-        />
-      )}
-      {analysisResult && analysisResult.error && (
-        <div className="fixed top-20 right-4 z-50 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          {analysisResult.error}
-        </div>
-      )}
-    </>
-  )
-}
+    <Button 
+      onClick={handleSubmit}
+      className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-md"
+    >
+      <Rocket className="mr-2 h-4 w-4" />
+      Submit Pipeline
+    </Button>
+  );
+};
+
+export const HeaderActions = () => {
+  return (
+    <div className="flex items-center space-x-2">
+      <SubmitButton />
+      <DarkModeToggle />
+    </div>
+  );
+};
+
+export default HeaderActions;
